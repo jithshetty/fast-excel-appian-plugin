@@ -1,0 +1,18 @@
+<appian-plugin name="Fast Excel"
+	key="fast-excel">
+	<plugin-info>
+		<description>Plugins used for Excel Operations - ExportSQLToExcel
+		</description>
+		<vendor name="Government Of Singapore"
+			url="https://www.tech.gov.sg" />
+		<version>1.1.0</version>
+		<application-version min="23.4" />
+	</plugin-info>
+	<!-- Data Type -->
+	<datatype key="SQLSheetData" name="Input Datatype for Fast-Excel Plugin">
+		<class>com.cts.fastexcel.datatype.SQLSheetData</class>
+	</datatype>
+	<!-- Smart Service -->
+	<smart-service name="Write SQL to Excel (Fast Excel)" key="writeSQLToExcelV1"
+		class="com.cts.fastexcel.smartservice.WriteSQLToExcel" />
+</appian-plugin>
