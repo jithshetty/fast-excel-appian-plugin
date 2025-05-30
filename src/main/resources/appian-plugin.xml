@@ -5,7 +5,7 @@
 		</description>
 		<vendor name="Government Of Singapore"
 			url="https://www.tech.gov.sg" />
-		<version>1.1.0</version>
+		<version>1.1.4</version>
 		<application-version min="23.4" />
 	</plugin-info>
 	<!-- Data Type -->
@@ -15,4 +15,11 @@
 	<!-- Smart Service -->
 	<smart-service name="Write SQL to Excel (Fast Excel)" key="writeSQLToExcelV1"
 		class="com.cts.fastexcel.smartservice.WriteSQLToExcel" />
+	<!-- Function Category -->
+	<function-category key="fastExcelFunctions"
+					   name="Fast Excel Functions" />
+
+	<!-- Functions -->
+	<function name="Read Excel Using Fast Excel" key="readUsingFastExcelV1"
+			  class="com.cts.fastexcel.function.ReadExcelFile" />
 </appian-plugin>

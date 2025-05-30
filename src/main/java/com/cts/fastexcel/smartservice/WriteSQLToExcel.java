@@ -233,9 +233,9 @@ public class WriteSQLToExcel extends AppianSmartService {
                     //Get ResultSet Metadata and Column Count
                     ResultSetMetaData rsmd = rs.getMetaData();
                     int colCount = rsmd.getColumnCount();
-
-                    processHeaders(ws, colCount, rsmd, headerColor);
-                    processRows(rs, ws, colCount, rsmd, excelDateFormat, excelDateTimeFormat);
+                    System.out.println("Start Row is: " + sqlSheetDataItem.getRowOffset());
+                    processHeaders(ws, colCount, rsmd, headerColor, sqlSheetDataItem.getRowOffset(), sqlSheetDataItem.getColumnOffset());
+                    processRows(rs, ws, colCount, rsmd, excelDateFormat, excelDateTimeFormat, sqlSheetDataItem.getRowOffset(), sqlSheetDataItem.getColumnOffset());
 
                     ws.finish();
                     LOG.debug(" Sheet: {}. Flushed Sheet to File", sheetName);
@@ -247,12 +247,12 @@ public class WriteSQLToExcel extends AppianSmartService {
         }
     }
 
-    private void processHeaders(Worksheet ws, int colCount, ResultSetMetaData rsmd, String headerColor) throws SQLException {
+    private void processHeaders(Worksheet ws, int colCount, ResultSetMetaData rsmd, String headerColor, int startRow, int colOffset) throws SQLException {
         //Process Headers from ResultSet. Add Stying for Headers in Excel
         for (int i = 0; i < colCount; i++) {
-            ws.value(0, i, rsmd.getColumnName(i + 1));
+            ws.value(startRow, colOffset + i, rsmd.getColumnName(i + 1));
             if (headerColor != null && !headerColor.isEmpty()) {
-                ws.style(0, i)
+                ws.style(startRow, i)
                         .bold()
                         .fillColor(headerColor.replace("#", ""))
                         .borderColor(BorderSide.RIGHT, Color.BLACK)
@@ -268,42 +268,43 @@ public class WriteSQLToExcel extends AppianSmartService {
         }
     }
 
-    private void processRows(ResultSet rs, Worksheet ws, int colCount, ResultSetMetaData rsmd, String excelDateFormat, String excelDateTimeFormat) throws SQLException, IOException {
+    private void processRows(ResultSet rs, Worksheet ws, int colCount, ResultSetMetaData rsmd, String excelDateFormat, String excelDateTimeFormat, int startRow, int colOffset) throws SQLException, IOException {
         // Process ResultSet Rows based on Column Type
         while (rs.next()) {
-            int row = rs.getRow();
+            int row = startRow + rs.getRow();
             int col;
+            int sheetCol;
             for (int i = 0; i < colCount; i++) {
                 col = i + 1;
+                sheetCol = colOffset + 1;
                 int columnType = rsmd.getColumnType(col);
                 switch (columnType) {
                     case Types.BIT:
                     case Types.BOOLEAN:
-                        ws.value(row, i, (rs.getBoolean(col) ? "Yes" : "No"));
+                        ws.value(row, sheetCol, (rs.getBoolean(col) ? "Yes" : "No"));
                         break;
                     case Types.DATE:
-                        ws.value(row, i, rs.getDate(col));
-                        ws.style(row, i).format(excelDateFormat).set();
+                        ws.value(row, sheetCol, rs.getDate(col));
+                        ws.style(row, sheetCol).format(excelDateFormat).set();
                         break;
                     case Types.TIMESTAMP:
-                        ws.value(row, i, rs.getTimestamp(col));
-                        ws.style(row, i).format(excelDateTimeFormat).set();
+                        ws.value(row, sheetCol, rs.getTimestamp(col));
+                        ws.style(row, sheetCol).format(excelDateTimeFormat).set();
                         break;
                     case Types.DOUBLE:
                     case Types.FLOAT:
                     case Types.DECIMAL:
-                    case Types.NUMERIC:
                     case Types.REAL:
-                        ws.value(row, i, rs.getDouble(col));
+                        ws.value(row, sheetCol, 123);
                         break;
                     case Types.INTEGER:
                     case Types.BIGINT:
                     case Types.SMALLINT:
                     case Types.TINYINT:
-                        ws.value(row, i, rs.getLong(col));
+                        ws.value(row, sheetCol, rs.getLong(col));
                         break;
                     default:
-                        ws.value(row, i, rs.getString(col));
+                        ws.value(row, sheetCol, rs.getString(col));
                         break;
                 }
             }
@@ -350,6 +351,12 @@ public class WriteSQLToExcel extends AppianSmartService {
                 messages.addError(EXPORT_DATA_INPUT, "exportDataList.sqlQuery.startSyntax");
             }
             if (sqlSheetData.getSqlQuery().endsWith(";")) {
+                messages.addError(EXPORT_DATA_INPUT, "exportDataList.sqlQuery.endSyntax");
+            }
+            if (sqlSheetData.getRowOffset() <= 0) {
+                messages.addError(EXPORT_DATA_INPUT, "exportDataList.sqlQuery.endSyntax");
+            }
+            if (sqlSheetData.getColumnOffset() <= 0) {
                 messages.addError(EXPORT_DATA_INPUT, "exportDataList.sqlQuery.endSyntax");
             }
         }
