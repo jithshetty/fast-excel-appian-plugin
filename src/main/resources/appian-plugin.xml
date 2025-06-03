@@ -5,7 +5,7 @@
 		</description>
 		<vendor name="Government Of Singapore"
 			url="https://www.tech.gov.sg" />
-		<version>1.1.0</version>
+		<version>1.1.1</version>
 		<application-version min="23.4" />
 	</plugin-info>
 	<!-- Data Type -->
