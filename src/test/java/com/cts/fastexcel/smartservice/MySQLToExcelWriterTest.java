@@ -33,7 +33,8 @@ public class MySQLToExcelWriterTest {
     private final WriteSQLToExcel writeSQLToExcel = new WriteSQLToExcel(contentService, context);
     private static final Logger LOG = LogManager.getLogger(MySQLToExcelWriterTest.class);
 
-    private static final String URL = "jdbc:mysql://192.168.18.72:3306/appian?allowPublicKeyRetrieval=true&useSSL=false";
+    // update db connection info
+    private static final String URL = "jdbc:mysql://localhost:3306/appian?allowPublicKeyRetrieval=true&useSSL=false";
     private static final String USER = "root";
     private static final String PASSWORD = "password";
 
@@ -43,11 +44,11 @@ public class MySQLToExcelWriterTest {
 
         SQLSheetData data1 = new SQLSheetData();
         data1.setSheetName("Application");
-        data1.setSqlQuery("select * from grant_applications");
+        data1.setSqlQuery("select * from table1");
 
         SQLSheetData data2 = new SQLSheetData();
         data2.setSheetName("Latest");
-        data2.setSqlQuery("SELECT * from grant_disbursements");
+        data2.setSqlQuery("SELECT * from table2");
 
 
         exportDataList[0] = data1;
@@ -65,11 +66,11 @@ public class MySQLToExcelWriterTest {
 
         SQLSheetData data1 = new SQLSheetData();
         data1.setSheetName("Application");
-        data1.setSqlQuery("select * from grant_applications");
+        data1.setSqlQuery("select * from table1");
 
         SQLSheetData data2 = new SQLSheetData();
         data2.setSheetName("Latest");
-        data2.setSqlQuery("SELECT * from grant_disbursements");
+        data2.setSqlQuery("SELECT * from table2");
 
 
         exportDataList[0] = data1;
